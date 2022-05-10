@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "@create-figma-plugin/ui": "^1.8.3",
+    "@create-figma-plugin/utilities": "^1.8.3",
+    "preact": "^10"
+  },
+  "devDependencies": {
+    "@create-figma-plugin/build": "^1.8.3",
+    "@create-figma-plugin/tsconfig": "^1.8.3",
+    "@figma/plugin-typings": "1.42.1",
+    "typescript": "^4"
+  },
+  "scripts": {
+    "build": "build-figma-plugin --typecheck --minify",
+    "watch": "build-figma-plugin --typecheck --watch"
+  },
+  "figma-plugin": {
+    "editorType": [
+      "figma"
+    ],
+    "name": "Design Toolkit",
+    "main": "src/main.ts",
+    "ui": "src/ui.tsx",
+    "relaunchButtons": {
+      "designToolkit": {
+        "name": "Design Toolkit",
+        "main": "src/main.ts",
+        "ui": "src/ui.tsx"
+      }
+    },
+    "permissions": ["currentuser"]
+  }
+}
