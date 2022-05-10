@@ -71,24 +71,15 @@ export default function () {
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
-      const coverComponentKey = "7f0d9190a2d56c04aec6095903c1b57b03c7ba2c";
+      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610";
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
-    }
-
-
-    let aboutComponent: ComponentNode | null = null;
-
-    async function getAboutComponent() {
-      const aboutComponentKey = "5d74ab9aedcef86e9ca0b861cd6c7edbc8aeb48f";
-      const instance = await figma.importComponentByKeyAsync(aboutComponentKey);
-      aboutComponent = instance;
     }
 
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
-      const pageTitleComponentKey = "11c0d72e0e74fb6bae87b640f5e9ea6e62dca673";
+      const pageTitleComponentKey = "e5cd49ccd0e259b096bbd4f2ef83e935d742f42e";
       const instance = await figma.importComponentByKeyAsync(
         pageTitleComponentKey
       );
@@ -97,22 +88,21 @@ export default function () {
 
     // Example of a component to be imported
 
-    let journeyFlowComponent: ComponentNode | null = null;
+    let exampleComponent: ComponentNode | null = null;
 
-    async function getJourneyFlowComponent() {
-      const journeyFlowComponentKey =
-        "8b51ed52b2728193df659d6138ad1c3255d5b3e3";
+    async function getExampleComponent() {
+      const exampleComponentKey =
+        "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2";
       const instance = await figma.importComponentByKeyAsync(
-        journeyFlowComponentKey
+        exampleComponentKey
       );
-      journeyFlowComponent = instance;
+      exampleComponent = instance;
     }
 
     Promise.all([
       getCoverComponent(),
-      getAboutComponent(),
       getPageTitleComponent(),
-      getJourneyFlowComponent(),
+      getExampleComponent(),
       loadFont(),
     ]).then(() => {
       const coverPage = pages.filter((page) => page.name === "Cover")[0];
@@ -187,21 +177,20 @@ export default function () {
       // Set the page to zoom to fit the cover instance
       figma.viewport.scrollAndZoomIntoView([coverInstance]);
 
-      // Insert About component instance
+      // Insert About page title
       const aboutPage = pages.filter((page) => page.name === "🤔 About")[0];
       figma.currentPage = aboutPage.node;
-      const aboutInstance = aboutComponent.createInstance();
 
-      const titleInstance = pageTitleComponent.createInstance();
+      const titleAboutInstance = pageTitleComponent.createInstance();
 
-      const pageTitleText = readyPage.title;
+      const pageAboutTitleText = readyPage.title;
 
-      const pageTitle: TextNode = titleInstance.findOne(
+      const pageAboutTitle: TextNode = titleAboutInstance.findOne(
         (n) => n.name === "pageTitle" && n.type === "TEXT"
       );
-      pageTitle.characters = pageTitleText;
+      pageAboutTitle.characters = pageAboutTitleText;
 
-      figma.viewport.scrollAndZoomIntoView([aboutInstance]);
+      figma.viewport.scrollAndZoomIntoView([titleAboutInstance]);
 
       // Insert Prototype title
       const prototypePage = pages.filter(
@@ -224,14 +213,14 @@ export default function () {
         (page) => page.name === "✅ Ready for dev"
       )[0];
       figma.currentPage = readyPage.node;
-      const titleInstance = pageTitleComponent.createInstance();
+      const titleRFDInstance = pageTitleComponent.createInstance();
 
-      const pageTitleText = readyPage.title;
+      const pageRFDTitleText = readyPage.title;
 
-      const pageTitle: TextNode = titleInstance.findOne(
+      const pageRFDTitle: TextNode = titleRFDInstance.findOne(
         (n) => n.name === "pageTitle" && n.type === "TEXT"
       );
-      pageTitle.characters = pageTitleText;
+      pageRFDTitle.characters = pageRFDTitleText;
 
       figma.viewport.scrollAndZoomIntoView([titleInstance]);
 
@@ -358,13 +347,13 @@ export default function () {
 
       const titleFlowInstance = pageTitleComponent.createInstance();
       newSelection.push(titleFlowInstance);
-      const journeyFlowInstance = journeyFlowComponent.createInstance();
-      newSelection.push(journeyFlowInstance);
+      const exampleComponentInstance = getExampleComponent.createInstance();
+      newSelection.push(exampleComponentInstance);
 
-      journeyFlowInstance.y = 350;
-      var journeyFlowwidth = 3658;
-      var journeyFlowheight = 2672;
-      journeyFlowInstance.resize(journeyFlowwidth, journeyFlowheight);
+      exampleComponentInstance.y = 350;
+      var modifyWidth = 3000;
+      var modifyHeight = 2000;
+      exampleComponentInstance.resize(modifyWidth, modifyHeight);
 
       const flowTitleText = pageJFName.title;
 

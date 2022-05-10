@@ -39,10 +39,10 @@ Go to the project directory
   cd toolkit-figma-plugin
 ```
 
-Build the plugin:
+Install dependencies:
 
 ```bash
-  npm run build
+$ npm install
 ```
 
 Configuration options for your plugin go under the "figma-plugin" key of your package.json file.

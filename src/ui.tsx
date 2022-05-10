@@ -12,6 +12,7 @@ import {
 } from "@create-figma-plugin/ui";
 import { emit } from "@create-figma-plugin/utilities";
 
+import { h } from 'preact'
 import { useCallback, useState } from "preact/hooks";
 
 import { CreatePageHandler } from "./types";
@@ -43,13 +44,13 @@ function Plugin() {
             <Text bold>Documentation</Text>
             <Inline space="medium">
               <Text>
-                <a href="#" target="_blank">
+                <a href="http://toolkit.design" target="_blank">
                   🌐 Storybook
                 </a>
               </Text>
               <Text>
                 <a
-                  href="#"
+                  href="http://toolkit.design"
                   target="_blank"
                 >
                   🌐 Documentation
@@ -62,7 +63,7 @@ function Plugin() {
             <Inline space="medium">
               <Text>
                 <a
-                  href="#"
+                  href="http://toolkit.design"
                   target="_blank"
                 >
                   🌐 Social channel
@@ -70,7 +71,7 @@ function Plugin() {
               </Text>
               <Text>
                 <a
-                  href="#"
+                  href="http://toolkit.design"
                   target="_blank"
                 >
                   🌐 Jira
