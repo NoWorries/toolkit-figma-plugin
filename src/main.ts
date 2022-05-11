@@ -7,13 +7,12 @@ import {
 import { CreatePageHandler } from "./types";
 
 export default function () {
-  setRelaunchButton(figma.currentPage, "redHelper", {
-    description: "RED Design System helper",
+  setRelaunchButton(figma.currentPage, "Design Toolkit", {
+    description: "Design Toolkit",
   });
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
-
-    // This is the list of pages to create in your document. The `title` option is 
+    // This is the list of pages to create in your document. The `title` option is
 
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
@@ -49,10 +48,9 @@ export default function () {
     // Load any custom fonts required for editing text layers. Figma developer console will advise you if you need to include any missing fonts.
 
     async function loadFont() {
-      figma.loadFontAsync({ family: "Tiempos Text", style: "Bold" });
-      figma.loadFontAsync({ family: "National 2", style: "Regular" });
-      figma.loadFontAsync({ family: "PT Mono", style: "Bold" });
-      figma.loadFontAsync({ family: "Westpac", style: "Bold" });
+      figma.loadFontAsync({ family: "Work Sans", style: "Bold" });
+      figma.loadFontAsync({ family: "Open Sans", style: "Regular" });
+      figma.loadFontAsync({ family: "Open Sans", style: "SemiBold" });
     }
 
     // This forEach loop goes through the list of pages and creates each one using the 'name' values.
@@ -66,8 +64,11 @@ export default function () {
       page.node = newPage;
     });
 
-    // 
+    console.log("%cPages built", "color:green");
 
+    // Setup your components for import into pages
+
+    // Cover component
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
@@ -75,7 +76,9 @@ export default function () {
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
     }
+    console.log("%cCover component", "color:green");
 
+    // Title component
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
@@ -85,19 +88,20 @@ export default function () {
       );
       pageTitleComponent = instance;
     }
+    console.log("%cTitle component", "color:green");
 
     // Example of a component to be imported
 
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
-      const exampleComponentKey =
-        "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2";
+      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2";
       const instance = await figma.importComponentByKeyAsync(
         exampleComponentKey
       );
       exampleComponent = instance;
     }
+    console.log("%cExample component", "color:green");
 
     Promise.all([
       getCoverComponent(),
@@ -105,31 +109,32 @@ export default function () {
       getExampleComponent(),
       loadFont(),
     ]).then(() => {
+
+      // Switch to page called "Cover"
       const coverPage = pages.filter((page) => page.name === "Cover")[0];
 
       // Insert Cover component instance
       figma.currentPage = coverPage.node;
       const coverInstance = coverComponent.createInstance();
 
-      // Find the text layer called 'title' and replaces it with the value of titleText.
+      // Find the text layer called "Title" and replaces it with the value of titleText.
       const titleText = "Title";
-      
+
       const coverTitle: TextNode = coverInstance.findOne(
         (n) => n.name === "title" && n.type === "TEXT"
       );
       coverTitle.characters = titleText;
 
-      // Find the text layer called 'description' and replaces it with the value of descriptionText.
-      const descriptionText = "Enter a description for this file.";  
+      // Find the text layer called "description" and replaces it with the value of descriptionText.
+      const descriptionText = "Enter a description for this file.";
 
       const coverDescription: TextNode = coverInstance.findOne(
         (n) => n.name === "description" && n.type === "TEXT"
       );
       coverDescription.characters = descriptionText;
 
-
       // Find the text layer called 'userName' and replaces it with the value of authorName.
-      const authorName = figma.currentUser.name; 
+      const authorName = figma.currentUser.name;
 
       const coverAuthor: TextNode = coverInstance.findOne(
         (n) => n.name === "userName" && n.type === "TEXT"
@@ -177,6 +182,8 @@ export default function () {
       // Set the page to zoom to fit the cover instance
       figma.viewport.scrollAndZoomIntoView([coverInstance]);
 
+      console.log("%cCover inserted", "color:green");     
+      
       // Insert About page title
       const aboutPage = pages.filter((page) => page.name === "🤔 About")[0];
       figma.currentPage = aboutPage.node;
