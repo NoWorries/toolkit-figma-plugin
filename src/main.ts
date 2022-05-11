@@ -153,7 +153,7 @@ export default function () {
       // Find the text layer called 'userName' and replaces it with the value of authorName.
       const authorName = figma.currentUser.name;
 
-      const coverAuthor: SceneNode = coverInstance.findOne(
+      const coverAuthor: TextNode = coverInstance.findOne(
         (n) => n.name === "userName" && n.type === "TEXT"
       );
       coverAuthor.characters = authorName;
@@ -185,6 +185,8 @@ export default function () {
       coverDate.characters = monthNames[month] + " " + year;
 
       // Change the background colour of the cover page, perfect for making a seamless cover image in Figma.
+      // Colours must be converted to RGB format.
+
       figma.currentPage.backgrounds = [
         {
           type: "SOLID",
@@ -206,24 +208,29 @@ export default function () {
       const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
       figma.currentPage = pageExample.node; // Switch to that page
 
-      const exampleInstance = getExampleComponent.createInstance(); // Insert the example component
+      const exampleInstance = exampleComponent.createInstance(); // Insert the example component
 
-      exampleInstance.y = 350; // Move it down below the heading 
+      exampleInstance.y = 400; // Move it down below the heading 
       var exampleInstanceWidth = 3658; // Define a new width
       var exampleInstanceHeight = 2672; // Define a new height
       exampleInstance.resize(exampleInstanceWidth, exampleInstanceHeight); // Resize the component
 
-      // let newSelection = figma.currentPage.findChildren(n => n.type === "NODE")
+      let newSelection = figma.currentPage.findChildren(n => n.type === "INSTANCE");
 
-      // figma.currentPage.selection = newSelection
-      // figma.viewport.scrollAndZoomIntoView(newSelection);
-      // figma.currentPage.selection = [];
+      figma.currentPage.selection = newSelection
+      figma.viewport.scrollAndZoomIntoView(newSelection);
+      figma.currentPage.selection = [];
 
       // Go back to the Cover page
       figma.currentPage = figma.root.children[0];
-
       figma.closePlugin("Design Toolkit template applied");
-    });
+    }).catch(() => {
+      figma.closePlugin("Required library files not available");
+    }
+    ).finally(() => {
+     
+    }
+    );
   });
   showUI({
     width: 320,
