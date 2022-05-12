@@ -1,7 +1,7 @@
 
 # Design Toolkit
 
-Customise this Figma reference plugin to provide useful resources and automation(s) for yourself or your team. Inspect the code to see how you can customise it for your own needs and publish it for your team to use. 
+Customise this Figma reference plugin to provide useful resources and automations for yourself or your team. Inspect the code to see how you can customise it for your own needs and publish it for your team to use. 
 
 Made by [@JoshDesignNZ](https://twitter.com/JoshDesignNZ) using [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/).
 
