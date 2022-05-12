@@ -101,7 +101,7 @@ $ npm run watch
 ## Figma setup
 1. Duplicate the [Design Toolkit - Library](https://www.figma.com/community/file/1106540939095361694) to your team and publish the components so that the plugin can access them.
 2. Install the [Inspector](https://www.figma.com/community/plugin/760351147138040099/Inspector) plugin, to reference the unique `Key` for each component.
-3. Run the Inspector plugin and identify the unique `Key` for the components in your version of "Design Toolkit - Library". You will need to update the keys in `main.tsx` before the plugin will work.
+3. Run the Inspector plugin and identify the unique `Key` for the components in your version of "Design Toolkit - Library". You will need to update the keys in `main.ts` before the plugin will work.
 
 ## Run the plugin in Figma
 The plugin can now be launched using either of these methods:
