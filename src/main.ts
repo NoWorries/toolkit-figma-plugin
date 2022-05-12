@@ -6,9 +6,9 @@ import {
 
 import { CreatePageHandler } from "./types";
 
-export default function () {
-  setRelaunchButton(figma.currentPage, "Design Toolkit", {
-    description: "Design Toolkit",
+export default async function () {
+  setRelaunchButton(figma.currentPage, "designToolkit", {
+    description: "Useful tools and links",
   });
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
@@ -16,29 +16,77 @@ export default function () {
 
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
-      { name: "🤔 About", node: "PAGE", title: "About" },
-      { name: "💻 Prototype", node: "PAGE", title: "Prototype" },
+      {
+        name: "🤔 About",
+        node: "PAGE",
+        title: "About",
+        description: "Project overview",
+      },
+      {
+        name: "💻 Prototype",
+        node: "PAGE",
+        title: "Prototype",
+        description: "Interactive prototype",
+      },
       {
         name: "✅ Ready for dev",
         node: "PAGE",
         title: "Ready for dev",
-        description: "Designs that are now finalised and ready to be built",
+        description: "Approved designs, ready for development",
       },
       { name: "--------", node: "PAGE" },
-      { name: "✏️ Copy review", node: "PAGE", title: "Copy review" },
-      { name: "[Date] Design review", node: "PAGE", title: "Design review" },
+      {
+        name: "✏️ Copy review",
+        node: "PAGE",
+        title: "Copy review",
+        description: "Content for review and sign off",
+      },
+      {
+        name: "[Date] Design review",
+        node: "PAGE",
+        title: "Design review",
+        description: "[Date]",
+      },
       {
         name: "[Date] Feature/component",
         node: "PAGE",
-        title: "[Date] Feature/component",
+        title: "Feature/component",
+        description: "[Date]",
       },
       { name: "--------", node: "PAGE" },
-      { name: "💡 Work in progress", node: "PAGE", title: "Work in progress" },
+      {
+        name: "💡 Work in progress",
+        node: "PAGE",
+        title: "Work in progress",
+        description:
+          "Explorations and work in progress, not ready for development",
+      },
       { name: "--------", node: "PAGE" },
-      { name: "🎨 Design research", node: "PAGE", title: "Design research" },
-      { name: "👩🏽‍💻 User research", node: "PAGE", title: "User research" },
-      { name: "Workshop", node: "PAGE", title: "Workshop" },
-      { name: "Flows", node: "PAGE", title: "Flows" },
+      {
+        name: "🎨 Design research",
+        node: "PAGE",
+        title: "Design research",
+        description:
+          "Collected research artefacts and data from existing resources",
+      },
+      {
+        name: "👩🏽‍💻 User research",
+        node: "PAGE",
+        title: "User research",
+        description: "Generative field research",
+      },
+      {
+        name: "Workshop",
+        node: "PAGE",
+        title: "Workshop",
+        description: "Artefacts for workshop activity",
+      },
+      {
+        name: "Flows",
+        node: "PAGE",
+        title: "Flows",
+        description: "Journey flows and logic",
+      },
     ];
 
     // Show a notification
@@ -53,18 +101,27 @@ export default function () {
       figma.loadFontAsync({ family: "Open Sans", style: "SemiBold" });
     }
 
-    // This forEach loop goes through the list of pages and creates each one using the 'name' values.
+    function insertTitle(pageName: string) {
+      let matchPage = pages.filter((page) => page.name === pageName)[0];
+      if (matchPage.title == null) {
+        console.error("No title added on: " + matchPage.name);
+      } else {
+        figma.currentPage = matchPage.node;
+        let titleInstance = pageTitleComponent.createInstance();
 
-    figma.currentPage.name = pages[0].name;
-    pages[0].node = figma.currentPage;
+        let replaceTitle: TextNode = titleInstance.findOne(
+          (n) => n.name === "pageTitle" && n.type === "TEXT"
+        );
+        replaceTitle.characters = matchPage.title;
 
-    pages.slice(1).forEach((page) => {
-      const newPage = figma.createPage();
-      newPage.name = page.name;
-      page.node = newPage;
-    });
+        let replaceDescription: TextNode = titleInstance.findOne(
+          (n) => n.name === "pageDescription" && n.type === "TEXT"
+        );
+        replaceDescription.characters = matchPage.description;
 
-    console.log("%cPages built", "color:green");
+        figma.viewport.scrollAndZoomIntoView([titleInstance]);
+      }
+    }
 
     // Setup your components for import into pages
 
@@ -72,36 +129,35 @@ export default function () {
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
-      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610";
+      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610"; // Replace this with the Key for your cover component.
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
     }
-    console.log("%cCover component", "color:green");
 
     // Title component
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
-      const pageTitleComponentKey = "e5cd49ccd0e259b096bbd4f2ef83e935d742f42e";
+      const pageTitleComponentKey = "f957a4153e459744b5566bd34669465a17b5d0cb"; // Replace this with the Key for your title component.
       const instance = await figma.importComponentByKeyAsync(
         pageTitleComponentKey
       );
       pageTitleComponent = instance;
     }
-    console.log("%cTitle component", "color:green");
 
     // Example of a component to be imported
 
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
-      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2";
+      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2"; // This is an example component, use this block as a reference when for importing additional components
       const instance = await figma.importComponentByKeyAsync(
         exampleComponentKey
       );
       exampleComponent = instance;
     }
-    console.log("%cExample component", "color:green");
+
+    // The following section is contained within a Promise, which means it only runs when the above components and fonts are available.
 
     Promise.all([
       getCoverComponent(),
@@ -109,6 +165,21 @@ export default function () {
       getExampleComponent(),
       loadFont(),
     ]).then(() => {
+      console.log("%cFonts and components loaded", "color:green");
+
+      // This forEach loop goes through the list of pages and creates each one using the 'name' values.
+
+      figma.currentPage.name = pages[0].name;
+      pages[0].node = figma.currentPage;
+
+      pages.slice(1).forEach((page) => {
+        const newPage = figma.createPage();
+        newPage.name = page.name;
+        page.node = newPage;
+        insertTitle(page.name); // Inserts the heading component from library if there is a "title" value in your pages array.
+      });
+
+      console.log("%cPages built", "color:green");
 
       // Switch to page called "Cover"
       const coverPage = pages.filter((page) => page.name === "Cover")[0];
@@ -144,9 +215,9 @@ export default function () {
       // Get the current month and year, if you'd like a date stamp on your cover
       let monthIndex: number = new Date().getMonth();
       let yearIndex: number = new Date().getFullYear();
-      const month = monthIndex.toString(); // 1 for Jan, 2 for Feb
-      const year = yearIndex.toString(); // 1 for Jan, 2 for Feb
-      const monthNames = [
+      const month: number = monthIndex; // 1 for Jan, 2 for Feb
+      const year: number = yearIndex; // 1 for Jan, 2 for Feb
+      const monthNames: Array<string> = [
         "January",
         "February",
         "March",
@@ -168,6 +239,8 @@ export default function () {
       coverDate.characters = monthNames[month] + " " + year;
 
       // Change the background colour of the cover page, perfect for making a seamless cover image in Figma.
+      // Colours must be converted to RGB format.
+
       figma.currentPage.backgrounds = [
         {
           type: "SOLID",
@@ -182,201 +255,31 @@ export default function () {
       // Set the page to zoom to fit the cover instance
       figma.viewport.scrollAndZoomIntoView([coverInstance]);
 
-      console.log("%cCover inserted", "color:green");     
-      
-      // Insert About page title
-      const aboutPage = pages.filter((page) => page.name === "🤔 About")[0];
-      figma.currentPage = aboutPage.node;
+      console.log("%cCover inserted", "color:green");
 
-      const titleAboutInstance = pageTitleComponent.createInstance();
+      // Insert Example component
 
-      const pageAboutTitleText = readyPage.title;
+      const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
+      figma.currentPage = pageExample.node; // Switch to that page
 
-      const pageAboutTitle: TextNode = titleAboutInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
+      const exampleInstance = exampleComponent.createInstance(); // Insert the example component
+
+      exampleInstance.y = 500; // Move it down below the heading
+      var exampleInstanceWidth = 3000; // Define a new width
+      var exampleInstanceHeight = 2000; // Define a new height
+      exampleInstance.resize(exampleInstanceWidth, exampleInstanceHeight); // Resize the component
+
+      let newSelection = figma.currentPage.findChildren(
+        (n) => n.type === "INSTANCE"
       );
-      pageAboutTitle.characters = pageAboutTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleAboutInstance]);
-
-      // Insert Prototype title
-      const prototypePage = pages.filter(
-        (page) => page.name === "💻 Prototype"
-      )[0];
-      figma.currentPage = prototypePage.node;
-      const prototypeInstance = pageTitleComponent.createInstance();
-
-      const prototypeTitleText = prototypePage.title;
-
-      const prototypeTitle: TextNode = prototypeInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      prototypeTitle.characters = prototypeTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([prototypeInstance]);
-
-      // Insert Ready for Dev title
-      const readyPage = pages.filter(
-        (page) => page.name === "✅ Ready for dev"
-      )[0];
-      figma.currentPage = readyPage.node;
-      const titleRFDInstance = pageTitleComponent.createInstance();
-
-      const pageRFDTitleText = readyPage.title;
-
-      const pageRFDTitle: TextNode = titleRFDInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      pageRFDTitle.characters = pageRFDTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleInstance]);
-
-      // Insert Copy review title
-      const copyReviewPage = pages.filter(
-        (page) => page.name === "✏️ Copy review"
-      )[0];
-      figma.currentPage = copyReviewPage.node;
-      const titleCRInstance = pageTitleComponent.createInstance();
-
-      const pageCRTitleText = copyReviewPage.title;
-
-      const pageCRTitle: TextNode = titleCRInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      pageCRTitle.characters = pageCRTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleCRInstance]);
-
-      // Insert Design review title
-      const designReviewPage = pages.filter(
-        (page) => page.name === "[Date] Design review"
-      )[0];
-      figma.currentPage = designReviewPage.node;
-      const titleDRInstance = pageTitleComponent.createInstance();
-
-      const pageDRTitleText = designReviewPage.title;
-
-      const pageRRTitle: TextNode = titleDRInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      pageRRTitle.characters = pageDRTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleDRInstance]);
-
-      // Insert [Date] Feature/component title
-      const featureComponentPage = pages.filter(
-        (page) => page.name === "[Date] Feature/component"
-      )[0];
-      figma.currentPage = featureComponentPage.node;
-      const titleFeatureComponentInstance = pageTitleComponent.createInstance();
-
-      const fcTitleText = featureComponentPage.title;
-
-      const fcTitle: TextNode = titleFeatureComponentInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      fcTitle.characters = fcTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleFeatureComponentInstance]);
-
-      // Insert Work in progress title
-
-      const pageWIPName = pages.filter(
-        (page) => page.name === "💡 Work in progress"
-      )[0];
-      figma.currentPage = pageWIPName.node;
-      const titleWIPInstance = pageTitleComponent.createInstance();
-
-      const wipTitleText = pageWIPName.title;
-
-      const wipTitle: TextNode = titleWIPInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      wipTitle.characters = wipTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleWIPInstance]);
-
-      // Insert Design research title
-
-      const pageDRName = pages.filter(
-        (page) => page.name === "🎨 Design research"
-      )[0];
-      figma.currentPage = pageDRName.node;
-      const titleDesignResearchInstance = pageTitleComponent.createInstance();
-
-      const designResearchTitleText = pageDRName.title;
-
-      const designResearchTitle: TextNode = titleDesignResearchInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      designResearchTitle.characters = designResearchTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleDesignResearchInstance]);
-
-      // Insert User research title
-
-      const pageURName = pages.filter(
-        (page) => page.name === "👩🏽‍💻 User research"
-      )[0];
-      figma.currentPage = pageURName.node;
-      const titleUserResearchInstance = pageTitleComponent.createInstance();
-
-      const researchTitleText = pageURName.title;
-
-      const userResearchTitle: TextNode = titleUserResearchInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      userResearchTitle.characters = researchTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleUserResearchInstance]);
-
-      // Insert Workshop title
-
-      const pageWName = pages.filter((page) => page.name === "Workshop")[0];
-      figma.currentPage = pageWName.node;
-      const titleWorkshopInstance = pageTitleComponent.createInstance();
-
-      const workshopTitleText = pageWName.title;
-
-      const workshopTitle: TextNode = titleWorkshopInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      workshopTitle.characters = workshopTitleText;
-
-      figma.viewport.scrollAndZoomIntoView([titleWorkshopInstance]);
-
-      // Insert Journey Flow components
-
-      const pageJFName = pages.filter((page) => page.name === "Flows")[0];
-      figma.currentPage = pageJFName.node;
-
-      var newSelection = [];
-
-      const titleFlowInstance = pageTitleComponent.createInstance();
-      newSelection.push(titleFlowInstance);
-      const exampleComponentInstance = getExampleComponent.createInstance();
-      newSelection.push(exampleComponentInstance);
-
-      exampleComponentInstance.y = 350;
-      var modifyWidth = 3000;
-      var modifyHeight = 2000;
-      exampleComponentInstance.resize(modifyWidth, modifyHeight);
-
-      const flowTitleText = pageJFName.title;
-
-      const flowTitle: TextNode = titleFlowInstance.findOne(
-        (n) => n.name === "pageTitle" && n.type === "TEXT"
-      );
-      flowTitle.characters = flowTitleText;
 
       figma.currentPage.selection = newSelection;
       figma.viewport.scrollAndZoomIntoView(newSelection);
       figma.currentPage.selection = [];
 
       // Go back to the Cover page
-      figma.currentPage = coverPage.node;
-
-      figma.closePlugin("RED Template applied");
+      figma.currentPage = figma.root.children[0];
+      figma.closePlugin("Design Toolkit template applied");
     });
   });
   showUI({
