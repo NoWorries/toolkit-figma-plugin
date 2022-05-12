@@ -6,9 +6,9 @@ import {
 
 import { CreatePageHandler } from "./types";
 
-export default function () {
-  setRelaunchButton(figma.currentPage, "Design Toolkit", {
-    description: "Design Toolkit",
+export default async function () {
+  setRelaunchButton(figma.currentPage, "designToolkit", {
+    description: "Useful tools and links",
   });
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
@@ -16,29 +16,77 @@ export default function () {
 
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
-      { name: "🤔 About", node: "PAGE", title: "About" },
-      { name: "💻 Prototype", node: "PAGE", title: "Prototype" },
+      {
+        name: "🤔 About",
+        node: "PAGE",
+        title: "About",
+        description: "Project overview",
+      },
+      {
+        name: "💻 Prototype",
+        node: "PAGE",
+        title: "Prototype",
+        description: "Interactive prototype",
+      },
       {
         name: "✅ Ready for dev",
         node: "PAGE",
         title: "Ready for dev",
-        description: "Designs that are now finalised and ready to be built",
+        description: "Approved designs, ready for development",
       },
       { name: "--------", node: "PAGE" },
-      { name: "✏️ Copy review", node: "PAGE", title: "Copy review" },
-      { name: "[Date] Design review", node: "PAGE", title: "Design review" },
+      {
+        name: "✏️ Copy review",
+        node: "PAGE",
+        title: "Copy review",
+        description: "Content for review and sign off",
+      },
+      {
+        name: "[Date] Design review",
+        node: "PAGE",
+        title: "Design review",
+        description: "[Date]",
+      },
       {
         name: "[Date] Feature/component",
         node: "PAGE",
-        title: "[Date] Feature/component",
+        title: "Feature/component",
+        description: "[Date]",
       },
       { name: "--------", node: "PAGE" },
-      { name: "💡 Work in progress", node: "PAGE", title: "Work in progress" },
+      {
+        name: "💡 Work in progress",
+        node: "PAGE",
+        title: "Work in progress",
+        description:
+          "Explorations and work in progress, not ready for development",
+      },
       { name: "--------", node: "PAGE" },
-      { name: "🎨 Design research", node: "PAGE", title: "Design research" },
-      { name: "👩🏽‍💻 User research", node: "PAGE", title: "User research" },
-      { name: "Workshop", node: "PAGE", title: "Workshop" },
-      { name: "Flows", node: "PAGE", title: "Flows" },
+      {
+        name: "🎨 Design research",
+        node: "PAGE",
+        title: "Design research",
+        description:
+          "Collected research artefacts and data from existing resources",
+      },
+      {
+        name: "👩🏽‍💻 User research",
+        node: "PAGE",
+        title: "User research",
+        description: "Generative field research",
+      },
+      {
+        name: "Workshop",
+        node: "PAGE",
+        title: "Workshop",
+        description: "Artefacts for workshop activity",
+      },
+      {
+        name: "Flows",
+        node: "PAGE",
+        title: "Flows",
+        description: "Journey flows and logic",
+      },
     ];
 
     // Show a notification
@@ -56,15 +104,20 @@ export default function () {
     function insertTitle(pageName: string) {
       let matchPage = pages.filter((page) => page.name === pageName)[0];
       if (matchPage.title == null) {
-        console.error('No title added on: ' + matchPage.name );
+        console.error("No title added on: " + matchPage.name);
       } else {
         figma.currentPage = matchPage.node;
         let titleInstance = pageTitleComponent.createInstance();
 
-        let replaceText: TextNode = titleInstance.findOne(
+        let replaceTitle: TextNode = titleInstance.findOne(
           (n) => n.name === "pageTitle" && n.type === "TEXT"
         );
-        replaceText.characters = matchPage.title;
+        replaceTitle.characters = matchPage.title;
+
+        let replaceDescription: TextNode = titleInstance.findOne(
+          (n) => n.name === "pageDescription" && n.type === "TEXT"
+        );
+        replaceDescription.characters = matchPage.description;
 
         figma.viewport.scrollAndZoomIntoView([titleInstance]);
       }
@@ -76,7 +129,7 @@ export default function () {
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
-      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610";
+      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610"; // Replace this with the Key for your cover component.
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
     }
@@ -85,7 +138,7 @@ export default function () {
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
-      const pageTitleComponentKey = "f957a4153e459744b5566bd34669465a17b5d0cb";
+      const pageTitleComponentKey = "f957a4153e459744b5566bd34669465a17b5d0cb"; // Replace this with the Key for your title component.
       const instance = await figma.importComponentByKeyAsync(
         pageTitleComponentKey
       );
@@ -97,12 +150,14 @@ export default function () {
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
-      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2";
+      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2"; // This is an example component, use this block as a reference when for importing additional components
       const instance = await figma.importComponentByKeyAsync(
         exampleComponentKey
       );
       exampleComponent = instance;
     }
+
+    // The following section is contained within a Promise, which means it only runs when the above components and fonts are available.
 
     Promise.all([
       getCoverComponent(),
@@ -110,7 +165,6 @@ export default function () {
       getExampleComponent(),
       loadFont(),
     ]).then(() => {
-
       console.log("%cFonts and components loaded", "color:green");
 
       // This forEach loop goes through the list of pages and creates each one using the 'name' values.
@@ -161,9 +215,9 @@ export default function () {
       // Get the current month and year, if you'd like a date stamp on your cover
       let monthIndex: number = new Date().getMonth();
       let yearIndex: number = new Date().getFullYear();
-      const month: string = monthIndex.toString(); // 1 for Jan, 2 for Feb
-      const year: string = yearIndex.toString(); // 1 for Jan, 2 for Feb
-      const monthNames = [
+      const month: number = monthIndex; // 1 for Jan, 2 for Feb
+      const year: number = yearIndex; // 1 for Jan, 2 for Feb
+      const monthNames: Array<string> = [
         "January",
         "February",
         "March",
@@ -210,27 +264,23 @@ export default function () {
 
       const exampleInstance = exampleComponent.createInstance(); // Insert the example component
 
-      exampleInstance.y = 400; // Move it down below the heading 
-      var exampleInstanceWidth = 3658; // Define a new width
-      var exampleInstanceHeight = 2672; // Define a new height
+      exampleInstance.y = 500; // Move it down below the heading
+      var exampleInstanceWidth = 3000; // Define a new width
+      var exampleInstanceHeight = 2000; // Define a new height
       exampleInstance.resize(exampleInstanceWidth, exampleInstanceHeight); // Resize the component
 
-      let newSelection = figma.currentPage.findChildren(n => n.type === "INSTANCE");
+      let newSelection = figma.currentPage.findChildren(
+        (n) => n.type === "INSTANCE"
+      );
 
-      figma.currentPage.selection = newSelection
+      figma.currentPage.selection = newSelection;
       figma.viewport.scrollAndZoomIntoView(newSelection);
       figma.currentPage.selection = [];
 
       // Go back to the Cover page
       figma.currentPage = figma.root.children[0];
       figma.closePlugin("Design Toolkit template applied");
-    }).catch(() => {
-      figma.closePlugin("Required library files not available");
-    }
-    ).finally(() => {
-     
-    }
-    );
+    });
   });
   showUI({
     width: 320,
