@@ -129,7 +129,7 @@ export default async function () {
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
-      const coverComponentKey = "4cddc7f47ff175f1b4aca9e259481da9bf9be610"; // Replace this with the Key for your cover component.
+      const coverComponentKey = "INSERT_COVER_KEY_HERE"; // Replace this with the Key for your cover component.
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
     }
@@ -138,7 +138,7 @@ export default async function () {
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
-      const pageTitleComponentKey = "f957a4153e459744b5566bd34669465a17b5d0cb"; // Replace this with the Key for your title component.
+      const pageTitleComponentKey = "INSERT_TITLE_KEY_HERE"; // Replace this with the Key for your title component.
       const instance = await figma.importComponentByKeyAsync(
         pageTitleComponentKey
       );
@@ -150,7 +150,7 @@ export default async function () {
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
-      const exampleComponentKey = "4e01ce5d4315cb23da2fe9097e8d3cc25492a9c2"; // This is an example component, use this block as a reference when for importing additional components
+      const exampleComponentKey = "INSERT_EXAMPLE_KEY_HERE"; // This is an example component, use this block as a reference when for importing additional components
       const instance = await figma.importComponentByKeyAsync(
         exampleComponentKey
       );

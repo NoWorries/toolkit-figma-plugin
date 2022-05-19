@@ -44,13 +44,13 @@ function Plugin() {
             <Text bold>Documentation</Text>
             <Inline space="medium">
               <Text>
-                <a href="http://toolkit.design" target="_blank">
+                <a href="https://github.com/NoWorries/toolkit-figma-plugin" target="_blank">
                   🌐 Storybook
                 </a>
               </Text>
               <Text>
                 <a
-                  href="http://toolkit.design"
+                  href="https://github.com/NoWorries/toolkit-figma-plugin"
                   target="_blank"
                 >
                   🌐 Documentation
@@ -63,7 +63,7 @@ function Plugin() {
             <Inline space="medium">
               <Text>
                 <a
-                  href="http://toolkit.design"
+                  href="https://github.com/NoWorries/toolkit-figma-plugin"
                   target="_blank"
                 >
                   🌐 Social channel
@@ -71,7 +71,7 @@ function Plugin() {
               </Text>
               <Text>
                 <a
-                  href="http://toolkit.design"
+                  href="https://github.com/NoWorries/toolkit-figma-plugin"
                   target="_blank"
                 >
                   🌐 Jira
