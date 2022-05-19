@@ -3,6 +3,8 @@
 
 Customise this Figma reference plugin to provide useful resources and automations for yourself or your team. Inspect the code to see how you can customise it for your own needs and publish it for your team to use. 
 
+Follow the instructions in my medium write up for this project: [Build your team a file automation plugin in Figma](https://medium.com/@noworries/building-a-figma-plugin-to-automate-your-file-setup-2094e53016ba).
+
 Made by [@JoshDesignNZ](https://twitter.com/JoshDesignNZ) using [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/).
 
 **Disclaimer**: Things are a bit messy and there are some typescript errors to be addressed. But it does the job, and there was enough interest that I wanted to share it so everyone can have a try building their own toolkit plugin for Figma. Contributions welcome! 🤙
@@ -129,4 +131,4 @@ This project is used by the following companies:
 ## Acknowledgements
 
  - [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/) by [Yuan Qing Lim](https://twitter.com/yuanqinglim)
- - [Friends of Figma: Plugins](https://friends.figma.com/plugins/) Slack community
+ - [Figma plugins](https://figmaplugins.slack.com/) Slack community
