@@ -75,6 +75,7 @@ The `relaunchButtons` properties will insert a button in the sidebar to easily l
 Build the plugin:
 
 ```bash
+npm install
 npm run build
 ```
 
