@@ -77,6 +77,7 @@ Build the plugin:
 ```bash
 npm install
 npm run build
+npm run watch
 ```
 
 This will generate a `manifest.json` file and a build/ directory containing the JavaScript bundle(s) for the plugin.
