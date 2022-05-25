@@ -146,9 +146,7 @@ export default async function () {
 
     async function getPageTitleComponent() {
       const pageTitleComponentKey = "INSERT_TITLE_KEY_HERE"; // Replace this with the Key for your title component.
-      const instance = await figma.importComponentByKeyAsync(
-        pageTitleComponentKey
-      );
+      const instance = await figma.importComponentByKeyAsync(pageTitleComponentKey);
       pageTitleComponent = instance;
     }
 
@@ -158,9 +156,7 @@ export default async function () {
 
     async function getExampleComponent() {
       const exampleComponentKey = "INSERT_EXAMPLE_KEY_HERE"; // This is an example component, use this block as a reference when for importing additional components
-      const instance = await figma.importComponentByKeyAsync(
-        exampleComponentKey
-      );
+      const instance = await figma.importComponentByKeyAsync(exampleComponentKey);
       exampleComponent = instance;
     }
 
@@ -188,6 +184,7 @@ export default async function () {
 
       // Switch to page called "Cover"
       const coverPage = pages.filter((page) => page.name === "Cover")[0];
+      figma.currentPage.name = coverPage.name;
 
       // Insert Cover component instance
       if (coverComponent) {
@@ -272,9 +269,8 @@ export default async function () {
       }
 
       // Insert Example component
-
-      const pageExample: any = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
-      figma.currentPage = pageExample.node; // Switch to that page
+      const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
+      figma.currentPage.name = pageExample.name; // Switch to that page
 
       if (exampleComponent) {
         const exampleInstance = exampleComponent.createInstance(); // Insert the example component
