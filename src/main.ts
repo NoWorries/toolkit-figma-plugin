@@ -172,8 +172,8 @@ export default async function () {
       pages.slice(1).forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
-        figma.currentPage.name = page.name;
-        insertTitle(page.name); // Inserts the heading component from library if there is a "title" value in your pages array.
+        page.node = newPage;
+        insertTitle(page.name);; // Inserts the heading component from library if there is a "title" value in your pages array.
       });
 
       console.log("%cPages built", "color:green");
