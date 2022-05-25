@@ -169,7 +169,7 @@ export default async function () {
       console.log("%cFonts and components loaded", "color:green");
 
       // This forEach loop goes through the list of pages and creates each one using the 'name' values.
-      let createdPages = []
+      let createdPages: PageNode[] = []
       pages.slice(1).forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
@@ -288,7 +288,12 @@ export default async function () {
       }
 
       // Go back to the Cover page
-      figma.currentPage = figma.root.children[0];
+      figma.currentPage = coverPage;
+
+      // Remove the initial page
+      let initialPage = figma.root.children[0];
+      initialPage.remove();
+
       figma.closePlugin("Design Toolkit template applied");
     });
   });
