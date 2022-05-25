@@ -169,17 +169,19 @@ export default async function () {
       console.log("%cFonts and components loaded", "color:green");
 
       // This forEach loop goes through the list of pages and creates each one using the 'name' values.
+      let createdPages = []
       pages.slice(1).forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
         figma.currentPage = newPage;
-        insertTitle(page.name); // Inserts the heading component from library if there is a "title" value in your pages array.
+        insertTitle(page.name);
+        createdPages.push(newPage) // Inserts the heading component from library if there is a "title" value in your pages array.
       });
 
       console.log("%cPages built", "color:green");
 
       // Switch to page called "Cover"
-      const coverPage = pages.filter((page) => page.name === "Cover")[0];
+      const coverPage = createdPages.filter((page) => page.name === "Cover")[0];
       figma.currentPage = coverPage;
 
       // Insert Cover component instance
@@ -265,7 +267,7 @@ export default async function () {
       }
 
       // Insert Example component
-      const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
+      const pageExample = createdPages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
       figma.currentPage = pageExample; // Switch to that page
 
       if (exampleComponent) {
