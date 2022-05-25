@@ -169,9 +169,6 @@ export default async function () {
       console.log("%cFonts and components loaded", "color:green");
 
       // This forEach loop goes through the list of pages and creates each one using the 'name' values.
-
-      figma.currentPage.name = pages[0].name;
-
       pages.slice(1).forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
