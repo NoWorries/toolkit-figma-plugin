@@ -12,7 +12,7 @@ export default async function () {
   });
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
-    // This is the list of pages to create in your document. The `title` option is
+    // This is the list of pages to create in your document.
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
       {
@@ -135,7 +135,7 @@ export default async function () {
     let coverComponent: ComponentNode | null = null;
 
     async function getCoverComponent() {
-      const coverComponentKey = "20a29e88fda0a321d8ee635c7e43ba587eecc14a"; // Replace this with the Key for your cover component.
+      const coverComponentKey = "INSERT_COVER_KEY_HERE"; // Replace this with the Key for your cover component.
       const instance = await figma.importComponentByKeyAsync(coverComponentKey);
       coverComponent = instance;
     }
@@ -144,7 +144,7 @@ export default async function () {
     let pageTitleComponent: ComponentNode | null = null;
 
     async function getPageTitleComponent() {
-      const pageTitleComponentKey = "600c99ff7b4e43b89a3d6b499a3d505f27b79581"; // Replace this with the Key for your title component.
+      const pageTitleComponentKey = "INSERT_TITLE_KEY_HERE"; // Replace this with the Key for your title component.
       const instance = await figma.importComponentByKeyAsync(pageTitleComponentKey);
       pageTitleComponent = instance;
     }
@@ -153,7 +153,7 @@ export default async function () {
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
-      const exampleComponentKey = "36415f74f9304aabdaaa9b2be2e20874c8f51eea"; // This is an example component, use this block as a reference when for importing additional components
+      const exampleComponentKey = "INSERT_EXAMPLE_KEY_HERE"; // This is an example component, use this block as a reference when for importing additional components
       const instance = await figma.importComponentByKeyAsync(exampleComponentKey);
       exampleComponent = instance;
     }
@@ -292,7 +292,7 @@ export default async function () {
       // Go back to the Cover page
       figma.currentPage = coverPage;
 
-      // Remove the initial page
+      // Remove the initial 'Page 1' that isn't required any longer
       let initialPage = figma.root.children[0];
       initialPage.remove();
 
