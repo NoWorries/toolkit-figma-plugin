@@ -172,14 +172,15 @@ export default async function () {
       pages.slice(1).forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
-        newPage.appendChild(insertTitle(page.name)); // Inserts the heading component from library if there is a "title" value in your pages array.
+        figma.currentPage = newPage;
+        insertTitle(page.name); // Inserts the heading component from library if there is a "title" value in your pages array.
       });
 
       console.log("%cPages built", "color:green");
 
       // Switch to page called "Cover"
       const coverPage = pages.filter((page) => page.name === "Cover")[0];
-      figma.currentPage.name = coverPage.name;
+      figma.currentPage = coverPage;
 
       // Insert Cover component instance
       if (coverComponent) {
@@ -265,7 +266,7 @@ export default async function () {
 
       // Insert Example component
       const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
-      figma.currentPage.name = pageExample.name; // Switch to that page
+      figma.currentPage = pageExample; // Switch to that page
 
       if (exampleComponent) {
         const exampleInstance = exampleComponent.createInstance(); // Insert the example component
