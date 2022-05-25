@@ -13,7 +13,6 @@ export default async function () {
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
     // This is the list of pages to create in your document. The `title` option is
-
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
       {
@@ -151,7 +150,6 @@ export default async function () {
     }
 
     // Example of a component to be imported
-
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
