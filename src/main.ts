@@ -173,7 +173,7 @@ export default async function () {
       pages.forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
-        (if newPage.name !== 'Cover') {
+        if (newPage.name !== 'Cover') {
           figma.currentPage = newPage;
           insertTitle(page.name);
         }
