@@ -7,7 +7,7 @@ Follow the instructions in my medium write up for this project: [Build your team
 
 Made by [@JoshDesignNZ](https://twitter.com/JoshDesignNZ) using [Create Figma Plugin](https://yuanqing.github.io/create-figma-plugin/).
 
-**Disclaimer**: Things are a bit messy and there are some typescript errors to be addressed. But it does the job, and there was enough interest that I wanted to share it so everyone can have a try building their own toolkit plugin for Figma. Contributions welcome! 🤙
+**Contributions encouraged!**: Please feel free to suggest improvements for the plugin 🤙
 
 
 ## Features
