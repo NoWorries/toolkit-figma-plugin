@@ -12,8 +12,7 @@ export default async function () {
   });
 
   once<CreatePageHandler>("CREATE_PAGES", function () {
-    // This is the list of pages to create in your document. The `title` option is
-
+    // This is the list of pages to create in your document.
     const pages = [
       { name: "Cover", node: "PAGE", title: "Cover" },
       {
@@ -93,7 +92,8 @@ export default async function () {
 
     figma.notify("Building template", { timeout: Infinity });
 
-    // Load any custom fonts required for editing text layers. Figma developer console will advise you if you need to include any missing fonts.
+    // Load any custom fonts required for editing text layers.
+    // Figma developer console will advise you if you need to include any missing fonts.
 
     async function loadFont() {
       figma.loadFontAsync({ family: "Work Sans", style: "Bold" });
@@ -106,20 +106,26 @@ export default async function () {
       if (matchPage.title == null) {
         console.error("No title added on: " + matchPage.name);
       } else {
-        figma.currentPage = matchPage.node;
-        let titleInstance = pageTitleComponent.createInstance();
+        if (pageTitleComponent) {
+          let titleInstance: InstanceNode = pageTitleComponent.createInstance();
 
-        let replaceTitle: TextNode = titleInstance.findOne(
-          (n) => n.name === "pageTitle" && n.type === "TEXT"
-        );
-        replaceTitle.characters = matchPage.title;
+          let replaceTitle: any = titleInstance.findOne(
+            (n) => n.name === "pageTitle" && n.type === "TEXT"
+          );
 
-        let replaceDescription: TextNode = titleInstance.findOne(
-          (n) => n.name === "pageDescription" && n.type === "TEXT"
-        );
-        replaceDescription.characters = matchPage.description;
+          if (replaceTitle && replaceTitle.type === "TEXT") {
+            replaceTitle.characters = matchPage.title;
+          }
 
-        figma.viewport.scrollAndZoomIntoView([titleInstance]);
+          let replaceDescription: any = titleInstance.findOne(
+            (n) => n.name === "pageDescription" && n.type === "TEXT"
+          );
+
+          if (replaceDescription && replaceDescription.type === "TEXT") {
+            replaceDescription.characters = matchPage.description;
+          }
+          figma.viewport.scrollAndZoomIntoView([titleInstance]);
+        }
       }
     }
 
@@ -139,21 +145,16 @@ export default async function () {
 
     async function getPageTitleComponent() {
       const pageTitleComponentKey = "INSERT_TITLE_KEY_HERE"; // Replace this with the Key for your title component.
-      const instance = await figma.importComponentByKeyAsync(
-        pageTitleComponentKey
-      );
+      const instance = await figma.importComponentByKeyAsync(pageTitleComponentKey);
       pageTitleComponent = instance;
     }
 
     // Example of a component to be imported
-
     let exampleComponent: ComponentNode | null = null;
 
     async function getExampleComponent() {
       const exampleComponentKey = "INSERT_EXAMPLE_KEY_HERE"; // This is an example component, use this block as a reference when for importing additional components
-      const instance = await figma.importComponentByKeyAsync(
-        exampleComponentKey
-      );
+      const instance = await figma.importComponentByKeyAsync(exampleComponentKey);
       exampleComponent = instance;
     }
 
@@ -168,117 +169,133 @@ export default async function () {
       console.log("%cFonts and components loaded", "color:green");
 
       // This forEach loop goes through the list of pages and creates each one using the 'name' values.
-
-      figma.currentPage.name = pages[0].name;
-      pages[0].node = figma.currentPage;
-
-      pages.slice(1).forEach((page) => {
+      let createdPages: PageNode[] = []
+      pages.forEach((page) => {
         const newPage = figma.createPage();
         newPage.name = page.name;
-        page.node = newPage;
-        insertTitle(page.name); // Inserts the heading component from library if there is a "title" value in your pages array.
+        if (newPage.name !== 'Cover') {
+          figma.currentPage = newPage;
+          insertTitle(page.name);
+        }
+        createdPages.push(newPage) // Inserts the heading component from library if there is a "title" value in your pages array.
       });
 
       console.log("%cPages built", "color:green");
 
       // Switch to page called "Cover"
-      const coverPage = pages.filter((page) => page.name === "Cover")[0];
+      const coverPage = createdPages.filter((page) => page.name === "Cover")[0];
+      figma.currentPage = coverPage;
 
       // Insert Cover component instance
-      figma.currentPage = coverPage.node;
-      const coverInstance = coverComponent.createInstance();
+      if (coverComponent) {
+        const coverInstance: InstanceNode = coverComponent.createInstance();
 
-      // Find the text layer called "Title" and replaces it with the value of titleText.
-      const titleText = "Title";
+        // Find the text layer called "Title" and replaces it with the value of titleText.
+        const titleText = "Title";
 
-      const coverTitle: TextNode = coverInstance.findOne(
-        (n) => n.name === "title" && n.type === "TEXT"
-      );
-      coverTitle.characters = titleText;
+        const coverTitle = coverInstance.findOne(
+          (n) => n.name === "title" && n.type === "TEXT"
+        );
+        if (coverTitle && coverTitle.type === "TEXT") {
+          coverTitle.characters = titleText;
+        }
 
-      // Find the text layer called "description" and replaces it with the value of descriptionText.
-      const descriptionText = "Enter a description for this file.";
+        // Find the text layer called "description" and replaces it with the value of descriptionText.
+        const descriptionText = "Enter a description for this file.";
 
-      const coverDescription: TextNode = coverInstance.findOne(
-        (n) => n.name === "description" && n.type === "TEXT"
-      );
-      coverDescription.characters = descriptionText;
+        const coverDescription = coverInstance.findOne(
+          (n) => n.name === "description" && n.type === "TEXT"
+        );
+        if (coverDescription && coverDescription.type === "TEXT") {
+          coverDescription.characters = descriptionText;
+        }
+        // Find the text layer called 'userName' and replaces it with the value of authorName.
+        if(figma.currentUser) {
+          const authorName = figma.currentUser.name;
+          const coverAuthor = coverInstance.findOne(
+            (n) => n.name === "userName" && n.type === "TEXT"
+          );
+          if (coverAuthor && coverAuthor.type === "TEXT") {
+            coverAuthor.characters = authorName;
+          }
+        }
 
-      // Find the text layer called 'userName' and replaces it with the value of authorName.
-      const authorName = figma.currentUser.name;
+        // Get the current month and year, if you'd like a date stamp on your cover
+        let monthIndex: number = new Date().getMonth();
+        let yearIndex: number = new Date().getFullYear();
+        const month: number = monthIndex; // 1 for Jan, 2 for Feb
+        const year: number = yearIndex; // 1 for Jan, 2 for Feb
+        const monthNames: Array<string> = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
 
-      const coverAuthor: TextNode = coverInstance.findOne(
-        (n) => n.name === "userName" && n.type === "TEXT"
-      );
-      coverAuthor.characters = authorName;
+        // Find the text layer called 'dateCreated' and replaces it with the month and year.
+        const coverDate = coverInstance.findOne(
+          (n) => n.name === "dateCreated" && n.type === "TEXT"
+        );
+        if (coverDate && coverDate.type === "TEXT") {
+          coverDate.characters = monthNames[month] + " " + year;
+        }
 
-      // Get the current month and year, if you'd like a date stamp on your cover
-      let monthIndex: number = new Date().getMonth();
-      let yearIndex: number = new Date().getFullYear();
-      const month: number = monthIndex; // 1 for Jan, 2 for Feb
-      const year: number = yearIndex; // 1 for Jan, 2 for Feb
-      const monthNames: Array<string> = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-      ];
+        // Change the background colour of the cover page, perfect for making a seamless cover image in Figma.
+        // Colours must be converted to RGB format.
 
-      // Find the text layer called 'dateCreated' and replaces it with the month and year.
-      const coverDate: TextNode = coverInstance.findOne(
-        (n) => n.name === "dateCreated" && n.type === "TEXT"
-      );
-      coverDate.characters = monthNames[month] + " " + year;
-
-      // Change the background colour of the cover page, perfect for making a seamless cover image in Figma.
-      // Colours must be converted to RGB format.
-
-      figma.currentPage.backgrounds = [
-        {
-          type: "SOLID",
-          color: {
-            r: 1,
-            g: 1,
-            b: 1,
+        figma.currentPage.backgrounds = [
+          {
+            type: "SOLID",
+            color: {
+              r: 1,
+              g: 1,
+              b: 1,
+            },
           },
-        },
-      ];
+        ];
 
-      // Set the page to zoom to fit the cover instance
-      figma.viewport.scrollAndZoomIntoView([coverInstance]);
+        // Set the page to zoom to fit the cover instance
+        figma.viewport.scrollAndZoomIntoView([coverInstance]);
 
-      console.log("%cCover inserted", "color:green");
+        console.log("%cCover inserted", "color:green");
+      }
 
       // Insert Example component
+      const pageExample = createdPages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
+      figma.currentPage = pageExample; // Switch to that page
 
-      const pageExample = pages.filter((page) => page.name === "🤔 About")[0]; // Choose the page to insert component on
-      figma.currentPage = pageExample.node; // Switch to that page
+      if (exampleComponent) {
+        const exampleInstance = exampleComponent.createInstance(); // Insert the example component
 
-      const exampleInstance = exampleComponent.createInstance(); // Insert the example component
+        exampleInstance.y = 500; // Move it down below the heading
+        var exampleInstanceWidth = 3000; // Define a new width
+        var exampleInstanceHeight = 2000; // Define a new height
+        exampleInstance.resize(exampleInstanceWidth, exampleInstanceHeight); // Resize the component
 
-      exampleInstance.y = 500; // Move it down below the heading
-      var exampleInstanceWidth = 3000; // Define a new width
-      var exampleInstanceHeight = 2000; // Define a new height
-      exampleInstance.resize(exampleInstanceWidth, exampleInstanceHeight); // Resize the component
+        let newSelection = figma.currentPage.findChildren(
+          (n) => n.type === "INSTANCE"
+        );
 
-      let newSelection = figma.currentPage.findChildren(
-        (n) => n.type === "INSTANCE"
-      );
-
-      figma.currentPage.selection = newSelection;
-      figma.viewport.scrollAndZoomIntoView(newSelection);
-      figma.currentPage.selection = [];
+        figma.currentPage.selection = newSelection;
+        figma.viewport.scrollAndZoomIntoView(newSelection);
+        figma.currentPage.selection = [];
+      }
 
       // Go back to the Cover page
-      figma.currentPage = figma.root.children[0];
+      figma.currentPage = coverPage;
+
+      // Remove the initial 'Page 1' that isn't required any longer
+      let initialPage = figma.root.children[0];
+      initialPage.remove();
+
       figma.closePlugin("Design Toolkit template applied");
     });
   });
